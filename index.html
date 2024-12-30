@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đạt Nano</title>
+    <style>
+        /* Cơ bản */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Georgia', serif;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #6ca0dc, #b0c4de);
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* Chế độ sáng và tối */
+        .light-mode {
+            background: linear-gradient(to bottom, #6ca0dc, #b0c4de);
+            color: #2C3E50;
+        }
+
+        .dark-mode {
+            background: linear-gradient(to bottom, #001f3f, #003366);
+            color: #DDE6F2;
+        }
+
+        /* Bức thư */
+        #letter {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            cursor: pointer;
+            animation: floatToCenter 3s ease-in-out forwards;
+            z-index: 10;
+        }
+
+        @keyframes floatToCenter {
+            0% {
+                transform: translate(-50%, -50%) scale(0.5) rotate(-30deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            }
+        }
+
+        /* Lời chúc */
+        #message {
+            visibility: hidden;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%; /* Chiếm 80% chiều ngang màn hình */
+            max-width: 600px; /* Giới hạn chiều rộng tối đa */
+            font-size: 2rem; /* Kích thước chữ vừa phải */
+            line-height: 2.5rem; /* Khoảng cách dòng hợp lý */
+            text-align: center;
+            letter-spacing: 0.1rem; /* Tạo khoảng cách giữa các chữ */
+            opacity: 0;
+            z-index: 20;
+            color: white; /* Màu chữ trắng */
+            text-shadow: 0 0 10px white, 0 0 20px white, 0 0 30px white; /* Hiệu ứng phát sáng */
+            animation: glowText 6s infinite alternate, fadeInMessage 1.5s ease-in-out forwards;
+        }
+
+        @keyframes glowText {
+            0% {
+                color: white; /* Màu trắng */
+                text-shadow: 0 0 10px white, 0 0 20px white, 0 0 30px white;
+            }
+            100% {
+                color: #00ffcc; /* Màu xanh dương nhạt */
+                text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc, 0 0 30px #00ffcc;
+            }
+        }
+
+        @keyframes fadeInMessage {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        .dark-mode #message {
+            color: #E8F1F8; /* Màu chữ chế độ tối */
+            text-shadow: 0 0 10px #E8F1F8, 0 0 20px #E8F1F8, 0 0 30px #E8F1F8; /* Ánh sáng khi ở chế độ tối */
+        }
+
+        /* Nút chuyển chế độ */
+        #toggleMode {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #fff;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 30;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #toggleMode.dark-mode-btn {
+            background-color: #333;
+            color: #fff;
+        }
+
+        /* Hiệu ứng hạt sáng */
+        .sparkle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            animation: sparkleMove 5s infinite linear;
+        }
+
+        @keyframes sparkleMove {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <!-- Bức thư -->
+    <div id="letter" onclick="openLetter()">✉️</div>
+
+    <!-- Lời chúc -->
+    <div id="message">
+        <p>Năm mới 2025, dù tình yêu có đôi lúc khiến buồn lòng, đừng bỏ cuộc! Hạnh phúc thật sự chỉ đến với những người dám yêu, dám đau, và dám tìm lại niềm vui sau mỗi vấp ngã. Chúc người đọc được sẽ tìm thấy hạnh phúc mà mình xứng đáng có được</p>
+    </div>
+
+    <!-- Nút chuyển chế độ -->
+    <button id="toggleMode" onclick="toggleMode()">Chế độ tối</button>
+
+    <script>
+        // Hiệu ứng hạt sáng
+        function createSparkle() {
+            const sparkle = document.createElement('div');
+            sparkle.classList.add('sparkle');
+            sparkle.style.left = Math.random() * 100 + 'vw';
+            sparkle.style.animationDuration = Math.random() * 3 + 3 + 's';
+            sparkle.style.opacity = Math.random();
+            document.body.appendChild(sparkle);
+
+            sparkle.addEventListener('animationend', () => sparkle.remove());
+        }
+
+        setInterval(createSparkle, 300);
+
+        // Mở bức thư
+        function openLetter() {
+            const letter = document.getElementById('letter');
+            const message = document.getElementById('message');
+
+            // Ẩn bức thư
+            letter.style.display = 'none';
+
+            // Hiển thị lời chúc
+            message.style.visibility = 'visible';
+            message.classList.add('show');
+        }
+
+        // Chuyển chế độ sáng/tối
+        function toggleMode() {
+            const body = document.body;
+            const button = document.getElementById('toggleMode');
+
+            body.classList.toggle('dark-mode');
+            body.classList.toggle('light-mode');
+            button.classList.toggle('dark-mode-btn');
+            button.innerText = body.classList.contains('dark-mode')
+                ? 'Chế độ sáng'
+                : 'Chế độ tối';
+        }
+    </script>
+</body>
+</html>
